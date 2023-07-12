@@ -88,11 +88,11 @@ public class reminder extends BroadcastReceiver {
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         if(check(weekend, day)) {
             String s2 = sh.getString("weekendsint", "");
-            total_minutes = Integer.parseInt(s2);
+            total_minutes = 60*Integer.parseInt(s2);
         }
         else{
             String s2 = sh.getString("weekdaysint", "");
-            total_minutes = Integer.parseInt(s2);
+            total_minutes = 60*Integer.parseInt(s2);
         }
 
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -137,7 +137,7 @@ public class reminder extends BroadcastReceiver {
                         System.out.print("Time: " + time);
                         if (hour == Integer.parseInt(splitet[0]) && min >= Integer.parseInt(splitet[1])) {
                             //                        cancelAlarm();
-                            total_minutes = Integer.parseInt(s2);
+                            total_minutes = 60*Integer.parseInt(s2);
                             default_min = 0;
                             handler.postDelayed(this, 60000);
 
@@ -146,10 +146,11 @@ public class reminder extends BroadcastReceiver {
 
                             if (time == total_hour) {
 
-                                total_minutes = Integer.parseInt(s2);
+                                total_minutes = 60*Integer.parseInt(s2);
                                 default_min = 0;
                                 // lunch
                                 test = "Lunch Time";
+                                Toast.makeText(context, "Lunch Time", Toast.LENGTH_SHORT).show();
                                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                                 lunch[0] = true;
                             }
@@ -187,7 +188,7 @@ public class reminder extends BroadcastReceiver {
                         System.out.print("Time: " + time);
                         if (hour == Integer.parseInt(splitet[0]) && min >= Integer.parseInt(splitet[1])) {
                             //                        cancelAlarm();
-                            total_minutes = Integer.parseInt(s2);
+                            total_minutes = 60*Integer.parseInt(s2);
                             default_min = 0;
                             handler.postDelayed(this, 60000);
 
@@ -196,15 +197,16 @@ public class reminder extends BroadcastReceiver {
 
                             if (time == total_hour) {
 
-                                total_minutes = Integer.parseInt(s2);
+                                total_minutes = 60*Integer.parseInt(s2);
                                 default_min = 0;
                                 // lunch
                                 test = "Lunch Time";
+                                Toast.makeText(context, "Lunch Time", Toast.LENGTH_SHORT).show();
                                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                                 lunch[0] = true;
                             }
                             if (!lunch[0]) {
-                                Toast.makeText(context, String.valueOf(time), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context, String.valueOf(time), Toast.LENGTH_SHORT).show();
                                 if (time >= total_minutes) {
                                     test = "Drink Time";
                                     Toast.makeText(context, "Drink TIme", Toast.LENGTH_SHORT).show();

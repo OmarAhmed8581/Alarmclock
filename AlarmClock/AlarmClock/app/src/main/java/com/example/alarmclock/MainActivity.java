@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Set Interval Second");
+                builder.setTitle("Set Interval Minutes");
 
                 // Set up the input
                 final EditText input = new EditText(MainActivity.this);
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                                         myEdit.putString("weekdaystime", stime);
                                         myEdit.putString("weekdayetime", etime);
 //                                        myEdit.putInt("age", Integer.parseInt(age.getText().toString()));
-                                         starttext.setText("Interval Second: "+m_Text[0]+" , Start time: "+stime+" End time: "+etime);
+                                         starttext.setText("Interval Minutes: "+m_Text[0]+" , Start time: "+stime+" End time: "+etime);
 
                                         myEdit.commit();
 
@@ -150,15 +150,12 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-//        Log.d("Current Week:" + calender.get(Calendar.WEEK_OF_YEAR));
-
         final String[] m_Text1 = {""};
         endtext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Set Interval Second");
+                builder.setTitle("Set Interval Minutes");
 
                 // Set up the input
                 final EditText input = new EditText(MainActivity.this);
@@ -222,53 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-//
-//        startbtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Calendar calendar = Calendar.getInstance();
-//                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-//                int min = calendar.get(Calendar.MINUTE);
-//                TimePickerDialog timePickerDialog=new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
-//                    @Override
-//                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-//                        Calendar c =new GregorianCalendar();
-//                        c.set(Calendar.HOUR_OF_DAY,i);
-//                        c.set(Calendar.MINUTE,i1);
-//                        c.setTimeZone(TimeZone.getDefault());
-//                        SimpleDateFormat simpleDateFormat =new SimpleDateFormat("k:mm");
-//                        String time = simpleDateFormat.format(c.getTime());
-//                        starttext.setText("Start time of alarm Notification: "+time);
-//
-//                    }
-//                },hour,min,false);
-//                timePickerDialog.show();
-//            }
-//        });
-//        endbtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Calendar calendar = Calendar.getInstance();
-//                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-//                int min = calendar.get(Calendar.MINUTE);
-//                TimePickerDialog timePickerDialog=new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
-//                    @Override
-//                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-//                        Calendar c =new GregorianCalendar();
-//                        c.set(Calendar.HOUR_OF_DAY,i);
-//                        c.set(Calendar.MINUTE,i1);
-//                        c.setTimeZone(TimeZone.getDefault());
-//                        SimpleDateFormat simpleDateFormat =new SimpleDateFormat("k:mm");
-//                        String time = simpleDateFormat.format(c.getTime());
-//                        endtext.setText("End time of alarm Notification: "+time);
-//
-//                    }
-//                },hour,min,false);
-//                timePickerDialog.show();
-//            }
-//        });
+
     }
 
     private  void createnotification(){
