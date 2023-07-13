@@ -46,15 +46,12 @@ public class reminder extends BroadcastReceiver {
     private MediaPlayer mediaPlayer;
     static final Boolean[] alarm = {false};
     static final Boolean[] lunch = {false};
-
+    static Boolean alarmstatus = false;
     static String starttime;
     static String endtime;
     static NotificationCompat.Builder builder;
     private static boolean check(int[] arr, int toCheckValue)
     {
-        // check if the specified element
-        // is present in the array or not
-        // using Linear Search method
         boolean test = false;
         for (int element : arr) {
             if (element == toCheckValue) {
@@ -62,10 +59,6 @@ public class reminder extends BroadcastReceiver {
                 break;
             }
         }
-
-        // Print the result
-//        System.out.println("Is " + toCheckValue
-//                + " present in the array: " + test);
         return test;
     }
 
@@ -79,18 +72,12 @@ public class reminder extends BroadcastReceiver {
         }
     }
 
-//    public  static void cancelNotification(Context context){
-//        // Get the system notification service
-//        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        // Clear all notifications
-//        notificationManager.cancelAll();
-//    }
 
     public static void scheduleNotification(Context context) {
 
 //        starttime = starttime1;
 //        endtime = endtime1;
+        alarmstatus = true;
         SharedPreferences sh = context.getApplicationContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
@@ -123,111 +110,142 @@ public class reminder extends BroadcastReceiver {
                 public void run() {
                     Calendar calendar = Calendar.getInstance();
                     int day = calendar.get(Calendar.DAY_OF_WEEK);
-//                    Toast.makeText(context,"test", Toast.LENGTH_SHORT).show();
-                    if(check(weekend, day)) {
-                        String s2 = sh.getString("weekendsint", "");
-                        String s1 = sh.getString("weekendstime", "");
-                        String[] splitst = s1.split(":");
 
-                        String s11 = sh.getString("weekendetime", "");
-                        String[] splitet = s11.split(":");
+                    if(alarmstatus) {
 
-                        if(Objects.equals(splitst[0], "24")){
-                            splitst[0] ="0";
-                        }
 
-                        if(Objects.equals(splitet[0], "24")){
-                            splitet[0] ="0";
-                        }
+                        try {
 
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int min = calendar.get(Calendar.MINUTE);
-                        System.out.print("Time: " + time);
-                        if (hour == Integer.parseInt(splitet[0]) && min >= Integer.parseInt(splitet[1])) {
-                            //                        cancelAlarm();
-                            total_minutes = 60*Integer.parseInt(s2);
-                            default_min = 0;
-                            handler.postDelayed(this, 60000);
+                            if (check(weekend, day)) {
+                                String s2 = sh.getString("weekendsint", "");
+                                String s1 = sh.getString("weekendstime", "");
+                                String[] splitst = s1.split(":");
 
-                        } else if (hour >= Integer.parseInt(splitst[0]) && hour < Integer.parseInt((splitet[0])) && min >= Integer.parseInt(splitst[1])) {
-                            time += 1;
+                                String s11 = sh.getString("weekendetime", "");
+                                String[] splitet = s11.split(":");
 
-                            if (time == total_hour) {
+                                if (Objects.equals(splitst[0], "24")) {
+                                    splitst[0] = "0";
+                                }
 
-                                total_minutes = 60*Integer.parseInt(s2);
-                                default_min = 0;
-                                // lunch
-                                test = "Lunch Time";
-                                Toast.makeText(context, "Lunch Time", Toast.LENGTH_SHORT).show();
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                                lunch[0] = true;
-                            }
-                            if (!lunch[0]) {
-                                if (time >= total_minutes) {
-                                    test = "Drink Time";
-                                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, 1000, pendingIntent);
+                                if (Objects.equals(splitet[0], "24")) {
+                                    splitet[0] = "0";
+                                }
+
+                                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                                int min = calendar.get(Calendar.MINUTE);
+
+                                if (hour == Integer.parseInt(splitet[0]) && min >= Integer.parseInt(splitet[1])) {
+                                    //                        cancelAlarm();
+                                    total_minutes = 60 * Integer.parseInt(s2);
+                                    default_min = 0;
+                                    handler.postDelayed(this, 1000);
+
+                                } else if (hour >= Integer.parseInt(splitst[0]) && hour < Integer.parseInt((splitet[0])) && min >= Integer.parseInt(splitst[1])) {
+
+                                    if(alarmstatus) {
+                                        System.out.print("Time: " + time);
+                                        time += 1;
+
+                                        if (time == total_hour) {
+
+                                            total_minutes = 60 * Integer.parseInt(s2);
+                                            default_min = 0;
+                                            // lunch
+                                            test = "Lunch Time";
+                                            Toast.makeText(context, "Lunch Time", Toast.LENGTH_SHORT).show();
+                                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                                            lunch[0] = true;
+                                        }
+                                        if (!lunch[0]) {
+                                            if (time >= total_minutes) {
+                                                test = "Drink Time";
+                                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, 1000, pendingIntent);
+                                            } else {
+                                                handler.postDelayed(this, 1000); // Check every minute
+                                            }
+                                        }
+                                    }
+                                    else{
+                                        total_minutes = 60*15;  // 15 minutes interval
+                                        total_hour = 60*60;  // 15 minutes interval
+                                        default_min = 0;
+                                        handler.removeCallbacksAndMessages(null);
+                                    }
+
                                 } else {
-                                    handler.postDelayed(this, 3000); // Check every minute
+                                    handler.postDelayed(this, 1000);
+                                }
+                            } else {
+                                String s2 = sh.getString("weekdaysint", "");
+                                String s1 = sh.getString("weekdaystime", "");
+                                String[] splitst = s1.split(":");
+                                String s11 = sh.getString("weekdayetime", "");
+                                String[] splitet = s11.split(":");
+                                if (Objects.equals(splitst[0], "24")) {
+                                    splitst[0] = "0";
+                                }
+
+                                if (Objects.equals(splitet[0], "24")) {
+                                    splitet[0] = "0";
+                                }
+
+                                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                                int min = calendar.get(Calendar.MINUTE);
+                                System.out.print("Time: " + time);
+                                if (hour == Integer.parseInt(splitet[0]) && min >= Integer.parseInt(splitet[1])) {
+                                    //                        cancelAlarm();
+                                    total_minutes = 60 * Integer.parseInt(s2);
+                                    default_min = 0;
+                                    handler.postDelayed(this, 1000);
+
+                                } else if (hour >= Integer.parseInt(splitst[0]) && hour <= Integer.parseInt((splitet[0])) && min >= Integer.parseInt(splitst[1])) {
+//                                    Toast.makeText(context, String.valueOf(alarmstatus), Toast.LENGTH_SHORT).show();
+                                    if(alarmstatus) {
+                                        time += 1;
+
+
+                                        if (time == total_hour) {
+
+                                            total_minutes = 60 * Integer.parseInt(s2);
+                                            default_min = 0;
+                                            // lunch
+                                            test = "Lunch Time";
+                                            Toast.makeText(context, "Lunch Time", Toast.LENGTH_SHORT).show();
+                                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                                            lunch[0] = true;
+                                        }
+                                        if (!lunch[0]) {
+//                                            Toast.makeText(context, String.valueOf(time), Toast.LENGTH_SHORT).show();
+                                            if (time >= total_minutes) {
+                                                test = "Drink Time";
+                                                Toast.makeText(context, "Drink TIme", Toast.LENGTH_SHORT).show();
+                                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, 1000, pendingIntent);
+                                            } else {
+                                                handler.postDelayed(this, 1000); // Check every minute
+                                            }
+                                        }
+                                    }
+                                    else{
+                                        total_minutes = 60*15;  // 15 minutes interval
+                                        total_hour = 60*60;  // 15 minutes interval
+                                        default_min = 0;
+                                        handler.removeCallbacksAndMessages(null);
+                                    }
+                                } else {
+                                    handler.postDelayed(this, 1000);
                                 }
                             }
-                        } else {
-                            handler.postDelayed(this, 3000);
+                        } catch (Exception e) {
+                            Toast.makeText(context.getApplicationContext(), "Alarm is stop", Toast.LENGTH_SHORT).show();
                         }
                     }
                     else{
-                        String s2 = sh.getString("weekdaysint", "");
-                        String s1 = sh.getString("weekdaystime", "");
-                        String[] splitst = s1.split(":");
-                        String s11 = sh.getString("weekdayetime", "");
-                        String[] splitet = s11.split(":");
-                        if(Objects.equals(splitst[0], "24")){
-                            splitst[0] ="0";
-                        }
-
-                        if(Objects.equals(splitet[0], "24")){
-                            splitet[0] ="0";
-                        }
-
-
-
-
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int min = calendar.get(Calendar.MINUTE);
-                        System.out.print("Time: " + time);
-                        if (hour == Integer.parseInt(splitet[0]) && min >= Integer.parseInt(splitet[1])) {
-                            //                        cancelAlarm();
-                            total_minutes = 60*Integer.parseInt(s2);
-                            default_min = 0;
-                            handler.postDelayed(this, 60000);
-
-                        } else if (hour >= Integer.parseInt(splitst[0]) && hour <= Integer.parseInt((splitet[0])) && min >= Integer.parseInt(splitst[1])) {
-                            time += 1;
-
-                            if (time == total_hour) {
-
-                                total_minutes = 60*Integer.parseInt(s2);
-                                default_min = 0;
-                                // lunch
-                                test = "Lunch Time";
-                                Toast.makeText(context, "Lunch Time", Toast.LENGTH_SHORT).show();
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                                lunch[0] = true;
-                            }
-                            if (!lunch[0]) {
-//                                Toast.makeText(context, String.valueOf(time), Toast.LENGTH_SHORT).show();
-                                if (time >= total_minutes) {
-                                    test = "Drink Time";
-                                    Toast.makeText(context, "Drink TIme", Toast.LENGTH_SHORT).show();
-                                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, 1000, pendingIntent);
-                                } else {
-                                    handler.postDelayed(this, 3000); // Check every minute
-                                }
-                            }
-                        } else {
-                            handler.postDelayed(this, 3000);
-                        }
+                        total_minutes = 60*15;  // 15 minutes interval
+                        total_hour = 60*60;  // 15 minutes interval
+                        default_min = 0;
+                        handler.removeCallbacksAndMessages(null);
                     }
-
 //                    handler.postDelayed(this, 300);
                 }
 
@@ -246,6 +264,7 @@ public class reminder extends BroadcastReceiver {
     }
 
     public static void cancelNotification(Context context) {
+        alarmstatus = false;
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, reminder.class);

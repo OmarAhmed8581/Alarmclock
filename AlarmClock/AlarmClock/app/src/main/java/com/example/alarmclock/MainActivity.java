@@ -2,6 +2,7 @@ package com.example.alarmclock;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     Button startbtn,endbtn,resetbtn;
     TextView starttext,endtext;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +61,12 @@ public class MainActivity extends AppCompatActivity {
         resetbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"reset alarm.........",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"reset alarm.........",Toast.LENGTH_SHORT).show();
                 SharedPreferences settings = getSharedPreferences("MySharedPref", MODE_PRIVATE);
                 settings.edit().clear().apply();
                 endtext.setText("Set");
                 starttext.setText("Set");
-
-
+                reminder.cancelNotification(getApplicationContext());
             }
         });
 
@@ -74,9 +75,18 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Reminder set",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this , reminder.class);
-                reminder.cancelNotification(getApplicationContext());
+                String startt = String.valueOf(starttext.getText());
+                String endt = String.valueOf(endtext.getText());
+                if(!endt.equals("Set") && !startt.equals("Set")) {
+
+                    Toast.makeText(getApplicationContext(), "Reminder set", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, reminder.class);
+                    reminder.scheduleNotification(getApplicationContext());
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please input weekdays and weekends", Toast.LENGTH_SHORT).show();
+                }
+
 
 
             }
@@ -99,45 +109,52 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text[0] = input.getText().toString();
-                        //
-                        Calendar calendar = Calendar.getInstance();
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int min = calendar.get(Calendar.MINUTE);
-                        TimePickerDialog timePickerDialog=new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                Calendar c =new GregorianCalendar();
-                                c.set(Calendar.HOUR_OF_DAY,i);
-                                c.set(Calendar.MINUTE,i1);
-                                c.setTimeZone(TimeZone.getDefault());
-                                SimpleDateFormat simpleDateFormat =new SimpleDateFormat("k:mm");
-                                String stime = simpleDateFormat.format(c.getTime());
-                                Calendar calendar = Calendar.getInstance();
-                                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                                int min = calendar.get(Calendar.MINUTE);
-                                TimePickerDialog timePickerDialog=new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
-                                    @Override
-                                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                        Calendar c =new GregorianCalendar();
-                                        c.set(Calendar.HOUR_OF_DAY,i);
-                                        c.set(Calendar.MINUTE,i1);
-                                        c.setTimeZone(TimeZone.getDefault());
-                                        SimpleDateFormat simpleDateFormat =new SimpleDateFormat("k:mm");
-                                        String etime = simpleDateFormat.format(c.getTime());
-                                        myEdit.putString("weekdaysint", m_Text[0]);
-                                        myEdit.putString("weekdaystime", stime);
-                                        myEdit.putString("weekdayetime", etime);
-//                                        myEdit.putInt("age", Integer.parseInt(age.getText().toString()));
-                                         starttext.setText("Interval Minutes: "+m_Text[0]+" , Start time: "+stime+" End time: "+etime);
+                        if (!m_Text[0].equals("")) {
 
-                                        myEdit.commit();
 
-                                    }
-                                },hour,min,false);
-                                timePickerDialog.show();
-                            }
-                        },hour,min,false);
-                        timePickerDialog.show();
+                            //
+                            Calendar calendar = Calendar.getInstance();
+                            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                            int min = calendar.get(Calendar.MINUTE);
+                            TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
+                                @Override
+                                public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                    Calendar c = new GregorianCalendar();
+                                    c.set(Calendar.HOUR_OF_DAY, i);
+                                    c.set(Calendar.MINUTE, i1);
+                                    c.setTimeZone(TimeZone.getDefault());
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("k:mm");
+                                    String stime = simpleDateFormat.format(c.getTime());
+                                    Calendar calendar = Calendar.getInstance();
+                                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                                    int min = calendar.get(Calendar.MINUTE);
+                                    TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
+                                        @Override
+                                        public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                            Calendar c = new GregorianCalendar();
+                                            c.set(Calendar.HOUR_OF_DAY, i);
+                                            c.set(Calendar.MINUTE, i1);
+                                            c.setTimeZone(TimeZone.getDefault());
+                                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("k:mm");
+                                            String etime = simpleDateFormat.format(c.getTime());
+                                            myEdit.putString("weekdaysint", m_Text[0]);
+                                            myEdit.putString("weekdaystime", stime);
+                                            myEdit.putString("weekdayetime", etime);
+                                            //                                        myEdit.putInt("age", Integer.parseInt(age.getText().toString()));
+                                            starttext.setText("Interval Minutes: " + m_Text[0] + " , Start time: " + stime + " End time: " + etime);
+
+                                            myEdit.commit();
+
+                                        }
+                                    }, hour, min, false);
+                                    timePickerDialog.show();
+                                }
+                            }, hour, min, false);
+                            timePickerDialog.show();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(),"Please Enter Interval",Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -157,11 +174,11 @@ public class MainActivity extends AppCompatActivity {
             String s2 = sh.getString("weekendsint", "");
             String s1 = sh.getString("weekendstime", "");
             String s3 = sh.getString("weekendetime", "");
-            endtext.setText("Interval Second: "+s2+" , Start time: "+s1+" End time: "+s2);
+            endtext.setText("Interval Minutes: "+s2+" , Start time: "+s1+" End time: "+s2);
             String s4 = sh.getString("weekdaysint", "");
             String s5 = sh.getString("weekdaystime", "");
             String s6 = sh.getString("weekdayetime", "");
-            starttext.setText("Interval Second: "+s4+" , Start time: "+s5+" End time: "+s6);
+            starttext.setText("Interval Minutes: "+s4+" , Start time: "+s5+" End time: "+s6);
             reminder.scheduleNotification(getApplicationContext());
 
         }
@@ -184,45 +201,52 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text1[0] = input.getText().toString();
-                        //
-                        Calendar calendar = Calendar.getInstance();
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int min = calendar.get(Calendar.MINUTE);
-                        TimePickerDialog timePickerDialog=new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                Calendar c =new GregorianCalendar();
-                                c.set(Calendar.HOUR_OF_DAY,i);
-                                c.set(Calendar.MINUTE,i1);
-                                c.setTimeZone(TimeZone.getDefault());
-                                SimpleDateFormat simpleDateFormat =new SimpleDateFormat("k:mm");
-                                String stime = simpleDateFormat.format(c.getTime());
-//                                starttext.setText("Interval minutes: "+m_Text[0]+" and Start time");
+                        if(!m_Text1[0].equals("")) {
 
-                                //
-                                Calendar calendar = Calendar.getInstance();
-                                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                                int min = calendar.get(Calendar.MINUTE);
-                                TimePickerDialog timePickerDialog=new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
-                                    @Override
-                                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                        Calendar c =new GregorianCalendar();
-                                        c.set(Calendar.HOUR_OF_DAY,i);
-                                        c.set(Calendar.MINUTE,i1);
-                                        c.setTimeZone(TimeZone.getDefault());
-                                        SimpleDateFormat simpleDateFormat =new SimpleDateFormat("k:mm");
-                                        String etime = simpleDateFormat.format(c.getTime());
-                                        myEdit.putString("weekendsint", m_Text[0]);
-                                        myEdit.putString("weekendstime", stime);
-                                        myEdit.putString("weekendetime", etime);
-                                        endtext.setText("Interval Second: "+m_Text1[0]+" , Start time: "+stime+" End time: "+etime);
-                                        myEdit.commit();
-                                    }
-                                },hour,min,false);
-                                timePickerDialog.show();
-                            }
-                        },hour,min,false);
-                        timePickerDialog.show();
+
+                            //
+                            Calendar calendar = Calendar.getInstance();
+                            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                            int min = calendar.get(Calendar.MINUTE);
+                            TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
+                                @Override
+                                public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                    Calendar c = new GregorianCalendar();
+                                    c.set(Calendar.HOUR_OF_DAY, i);
+                                    c.set(Calendar.MINUTE, i1);
+                                    c.setTimeZone(TimeZone.getDefault());
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("k:mm");
+                                    String stime = simpleDateFormat.format(c.getTime());
+                                    //                                starttext.setText("Interval minutes: "+m_Text[0]+" and Start time");
+
+                                    //
+                                    Calendar calendar = Calendar.getInstance();
+                                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                                    int min = calendar.get(Calendar.MINUTE);
+                                    TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, androidx.appcompat.R.style.Theme_AppCompat_Dialog, new TimePickerDialog.OnTimeSetListener() {
+                                        @Override
+                                        public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                            Calendar c = new GregorianCalendar();
+                                            c.set(Calendar.HOUR_OF_DAY, i);
+                                            c.set(Calendar.MINUTE, i1);
+                                            c.setTimeZone(TimeZone.getDefault());
+                                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("k:mm");
+                                            String etime = simpleDateFormat.format(c.getTime());
+                                            myEdit.putString("weekendsint", m_Text[0]);
+                                            myEdit.putString("weekendstime", stime);
+                                            myEdit.putString("weekendetime", etime);
+                                            endtext.setText("Interval Minutes: " + m_Text1[0] + " , Start time: " + stime + " End time: " + etime);
+                                            myEdit.commit();
+                                        }
+                                    }, hour, min, false);
+                                    timePickerDialog.show();
+                                }
+                            }, hour, min, false);
+                            timePickerDialog.show();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(),"Please Enter Interval",Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
