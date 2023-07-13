@@ -79,6 +79,14 @@ public class reminder extends BroadcastReceiver {
         }
     }
 
+//    public  static void cancelNotification(Context context){
+//        // Get the system notification service
+//        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//        // Clear all notifications
+//        notificationManager.cancelAll();
+//    }
+
     public static void scheduleNotification(Context context) {
 
 //        starttime = starttime1;

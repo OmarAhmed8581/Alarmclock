@@ -36,7 +36,7 @@ import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button startbtn,endbtn;
+    Button startbtn,endbtn,resetbtn;
     TextView starttext,endtext;
 
     @Override
@@ -49,10 +49,25 @@ public class MainActivity extends AppCompatActivity {
         // Storing data into SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref",MODE_PRIVATE);
 
-// Creating an Editor object to edit(write to the file)
+        // Creating an Editor object to edit(write to the file)
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
         starttext = findViewById(R.id.starttime);
+
+        resetbtn = findViewById(R.id.alarmreset);
+
+        resetbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"reset alarm.........",Toast.LENGTH_SHORT).show();
+                SharedPreferences settings = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                settings.edit().clear().apply();
+                endtext.setText("Set");
+                starttext.setText("Set");
+
+
+            }
+        });
 
         endtext = findViewById(R.id.endtime);
 
@@ -61,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(),"Reminder set",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this , reminder.class);
-                reminder.scheduleNotification(getApplicationContext());
+                reminder.cancelNotification(getApplicationContext());
+
 
             }
         });

@@ -64,47 +64,29 @@
 
             />
 
-<!--        <Button-->
-<!--            android:id="@+id/stbtn"-->
-<!--            android:layout_width="150dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textSize="12sp"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:layout_marginTop="40dp"-->
-<!--            android:background="@drawable/btn_round"-->
-<!--            android:padding="8dp"-->
-<!--            android:text="Set Start time"/>-->
-
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="End time of alarm Notification:"-->
-<!--            android:id="@+id/endtime"-->
-<!--            android:layout_marginTop="100dp"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            />-->
-
-<!--        <Button-->
-<!--            android:id="@+id/etbtn"-->
-<!--            android:layout_width="150dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textSize="12sp"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:layout_marginTop="130dp"-->
-<!--            android:background="@drawable/btn_round"-->
-<!--            android:padding="8dp"-->
-<!--            android:text="Set End time"/>-->
-
         <Button
             android:id="@+id/alarm"
-            android:layout_width="300dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_marginStart="40dp"
             android:layout_marginTop="450dp"
             android:background="@drawable/btn_round"
             android:padding="8dp"
             android:text="Set Alarm"
+
+            />
+
+        <Button
+            android:id="@+id/alarmreset"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginStart="210dp"
+            android:layout_marginTop="450dp"
+            android:background="@drawable/btn_round"
+            android:padding="8dp"
+            android:text="Reset Alarm"
 
             />
 
